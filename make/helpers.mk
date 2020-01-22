@@ -6,6 +6,10 @@ define docker-logs
 	$(DOCKER) logs -f -t `cat ./dc.services | grep $1`
 endef
 
+define dc-build
+	$(DOCKER_COMPOSE) build
+endef
+
 define restart-docker
 	$(DOCKER_COMPOSE) restart $1
 endef

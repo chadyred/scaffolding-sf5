@@ -13,7 +13,12 @@ ENV ?= "development"
 
 install: .install ## Install all
 
-.install: vendor/autoload.php
+.PHONY: dc-build
+dc-build:
+	$(call dc-build)
+
+.install: dc-build vendor/autoload.php
+	$(call dc-build)
 	> $@
 
 start: .env vendor/autoload.php ## Start project all
