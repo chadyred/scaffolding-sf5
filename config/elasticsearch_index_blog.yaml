@@ -1,0 +1,15 @@
+settings:
+  index:
+    # single node, no sharding
+    number_of_shards: 1
+    number_of_replicas: 0
+mappings:
+  article:
+    dynamic: false # disable dynamic mapping
+    properties:
+      title: &en_text
+        type: text
+        analyzer: english
+      summary: *en_text
+      author: *en_text
+      content: *en_text

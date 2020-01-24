@@ -7,6 +7,10 @@ parameters:
     app.notifications.email_sender: anonymous@example.com
 
 services:
+    Elastica\Client:
+        $config:
+            host: 'elasticsearch' # ou 127.0.0.1
+
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.

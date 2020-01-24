@@ -22,7 +22,7 @@ dc-build:
 	> $@
 
 start: .env vendor/autoload.php ## Start project all
-	$(call up-docker, database php-fpm nginx reverseproxy)
+	$(call up-docker, database php-fpm nginx reverseproxy kibana elasticsearch)
 
 restart: .env vendor/autoload.php ## Restart project all
 	$(call down-docker)

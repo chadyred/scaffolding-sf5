@@ -17,6 +17,7 @@ use App\Events\CommentCreatedEvent;
 use App\Form\CommentType;
 use App\Repository\PostRepository;
 use App\Repository\TagRepository;
+use Elastica\Client;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -25,6 +26,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Elastica\Query;
+use Elastica\Query\BoolQuery;
+use Elastica\Query\MultiMatch;
 
 /**
  * Controller used to manage blog contents in the public part of the site.
@@ -142,7 +146,7 @@ class BlogController extends AbstractController
     /**
      * @Route("/search", methods={"GET"}, name="blog_search")
      */
-    public function search(Request $request, PostRepository $posts): Response
+    public function search(Request $request, Client $client): Response
     {
         if (!$request->isXmlHttpRequest()) {
             return $this->render('blog/search.html.twig');
@@ -150,17 +154,21 @@ class BlogController extends AbstractController
 
         $query = $request->query->get('q', '');
         $limit = $request->query->get('l', 10);
-        $foundPosts = $posts->findBySearchQuery($query, $limit);
 
+        $match = new MultiMatch();
+        $match->setQuery($query);
+        $match->setFields(["title^4", "summary", "content", "author"]);
+
+        $bool = new BoolQuery();
+        $bool->addMust($match);
+
+        $elasticaQuery = new Query($bool);
+        $elasticaQuery->setSize($limit);
+
+        $foundPosts = $client->getIndex('blog')->search($elasticaQuery);
         $results = [];
         foreach ($foundPosts as $post) {
-            $results[] = [
-                'title' => htmlspecialchars($post->getTitle(), ENT_COMPAT | ENT_HTML5),
-                'date' => $post->getPublishedAt()->format('M d, Y'),
-                'author' => htmlspecialchars($post->getAuthor()->getFullName(), ENT_COMPAT | ENT_HTML5),
-                'summary' => htmlspecialchars($post->getSummary(), ENT_COMPAT | ENT_HTML5),
-                'url' => $this->generateUrl('blog_post', ['slug' => $post->getSlug()]),
-            ];
+            $results[] = $post->getSource();
         }
 
         return $this->json($results);
