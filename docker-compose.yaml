@@ -21,7 +21,7 @@ services:
     environment:
       COMPOSER_HOME: /tmp
     volumes:
-      - /home/fcellier/.composer:/tmp:rw
+      - ~/.cache/composer/:/tmp:rw
       - ./:/app
 
   php-fpm:

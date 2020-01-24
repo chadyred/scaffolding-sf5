@@ -6,7 +6,7 @@ DOCKER := '$(shell which docker)'
 DOCKER_COMPOSE := '$(shell which docker-compose)'
 PWD := $(shell which pwd)
 APP_DIR ?= $(shell $(PWD))
-COMPOSER_CACHE_DIRECTORY ?= $(HOME)/.composer
+COMPOSER_CACHE_DIRECTORY ?= $(HOME)/.cache/composer/
 ENV ?= "development"
 
 .DEFAULT_GOAL = help
