@@ -11,6 +11,7 @@
         <title>{% block title %}Symfony Demo application{% endblock %}</title>
         <link rel="alternate" type="application/rss+xml" title="{{ 'rss.title'|trans }}" href="{{ path('blog_rss') }}">
         {% block stylesheets %}
+            {{ encore_entry_link_tags('main') }}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
@@ -122,6 +123,8 @@
                     </div>
                 </div>
             {% endblock %}
+
+            <div id="app"></div>
         </div>
 
         {% block footer %}
@@ -151,6 +154,7 @@
         {% endblock %}
 
         {% block javascripts %}
+            {{ encore_entry_script_tags('main') }}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
 

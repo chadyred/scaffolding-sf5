@@ -1,4 +1,5 @@
 import '../scss/app.scss';
+import '../scss/index.scss';
 
 // loads the Bootstrap jQuery plugins
 import 'bootstrap-sass/assets/javascripts/bootstrap/transition.js';
